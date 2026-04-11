@@ -22,14 +22,20 @@ pick_random_profile() {
 apply_cowrie() {
   local profile="$1"
   local src="$BASE/profiles/cowrie/$profile"
+
   local dst_cfg="$TPOT/data/cowrie/config/cowrie.cfg"
   local dst_honeyfs="$TPOT/data/cowrie/honeyfs"
+  local dst_userdb="$TPOT/data/cowrie/keys/userdb.txt"
 
   [[ -d "$src" ]] || { echo "Cowrie profile not found: $profile"; exit 1; }
   [[ -f "$src/cowrie.cfg" ]] || { echo "Missing cowrie.cfg in profile $profile"; exit 1; }
   [[ -d "$src/honeyfs" ]] || { echo "Missing honeyfs/ in profile $profile"; exit 1; }
+  [[ -f "$src/userdb.txt" ]] || { echo "Missing userdb.txt in profile $profile"; exit 1; }
+
+  echo "[+] Applying Cowrie profile: $profile"
 
   cp "$src/cowrie.cfg" "$dst_cfg"
+  cp "$src/userdb.txt" "$dst_userdb"
 
   rm -rf "$dst_honeyfs"
   mkdir -p "$dst_honeyfs"
@@ -37,22 +43,25 @@ apply_cowrie() {
 
   (cd "$TPOT" && docker compose restart cowrie)
 
-  echo "Applied Cowrie profile: $profile"
+  echo "[+] Cowrie profile applied: $profile"
 }
 
 apply_dionaea() {
   local profile="$1"
   local src="$BASE/profiles/dionaea/$profile"
+
   local dst_cfg="$TPOT/data/dionaea/config/dionaea.conf"
 
   [[ -d "$src" ]] || { echo "Dionaea profile not found: $profile"; exit 1; }
   [[ -f "$src/dionaea.conf" ]] || { echo "Missing dionaea.conf in profile $profile"; exit 1; }
 
+  echo "[+] Applying Dionaea profile: $profile"
+
   cp "$src/dionaea.conf" "$dst_cfg"
 
   (cd "$TPOT" && docker compose restart dionaea)
 
-  echo "Applied Dionaea profile: $profile"
+  echo "[+] Dionaea profile applied: $profile"
 }
 
 main() {
