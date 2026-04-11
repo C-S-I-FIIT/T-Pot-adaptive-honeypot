@@ -136,14 +136,14 @@ Poznámky:
 - T-Pot dáta očakáva v `/home/filip/tpotce`,
 - na úspešné vykonanie potrebuje prístup k týmto adresárom a funkčný `docker compose`.
 
-## Odporucanie Cowrie profilu z logov
+## Odporucanie profilov z logov
 
-Skript `recommend_cowrie_profile.py` nacita exportovane CSV logy, spracuje Cowrie eventy a cez jednoduchy Thompson sampling odporuci, ci ponechat aktualny profil alebo prepnut na iny.
+Skript `recommend_cowrie_profile.py` nacita exportovane CSV logy a cez jednoduchy Thompson sampling odporuci, ci ponechat aktualny profil alebo prepnut na iny.
 
 Spustenie:
 
 ```bash
-python3 recommend_cowrie_profile.py --current-profile default
+python3 recommend_cowrie_profile.py --type cowrie --current-profile default
 ```
 
 Po spusteni sa otvori dialog na vyber CSV suboru.
@@ -152,22 +152,33 @@ Alternativne vies zadat subor priamo:
 
 ```bash
 python3 recommend_cowrie_profile.py \
+  --type cowrie \
   --current-profile default \
   --csv-file /cesta/k/logom.csv
 ```
 
-Skript momentalne pracuje s Cowrie eventmi:
+Skript podporuje dva mody:
+
+- `cowrie`
+- `ftp`
+
+Priklady:
+
+```bash
+python3 recommend_cowrie_profile.py --type cowrie --current-profile default
+python3 recommend_cowrie_profile.py --type ftp --current-profile windows7
+python3 recommend_cowrie_profile.py --type ftp --current-profile default
+```
+
+Pri `--type ftp` sa `default` mapuje na profil `windows7`.
+
+### Cowrie CSV
+
+Skript pracuje s Cowrie eventmi:
 
 - `cowrie.login.failed`
 - `cowrie.login.success`
 - `cowrie.command.input`
-
-Na vystupe vypise:
-
-- sumar logov,
-- top usernames a passwords,
-- Thompson sampling score pre jednotlive profily,
-- finalne odporucanie, ci profil zmenit alebo nie.
 
 Minimalne podporovane stlpce v CSV:
 
@@ -182,6 +193,33 @@ Volitelne, ak su k dispozicii:
 - `src_ip`
 - `message`
 - `ip_rep`
+
+### FTP CSV
+
+Pre FTP logy skript ocakava hlavne tieto stlpce:
+
+- `@timestamp`
+- `src_ip`
+- `ftp.command`
+
+Alternativne vie spracovat aj stlpec:
+
+- `ftp.command_data`
+
+Zo stlpcov `ftp.command` alebo `ftp.command_data` vie parsovat prikazy ako napr.:
+
+- `USER anonymous`
+- `PASS ...`
+- `LIST`
+- `PWD`
+- `SYST`
+
+Na vystupe skript vypise:
+
+- sumar logov,
+- top usernames, passwords alebo FTP commands podla typu vstupu,
+- Thompson sampling score pre jednotlive profily,
+- finalne odporucanie, ci profil zmenit alebo nie.
 
 CSV z Kibany vies ziskat nasledovne:
 
