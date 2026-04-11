@@ -50,14 +50,20 @@ apply_dionaea() {
   local profile="$1"
   local src="$BASE/profiles/dionaea/$profile"
 
-  local dst_cfg="$TPOT/data/dionaea/config/dionaea.conf"
+  local dst_services="$TPOT/data/dionaea/services"
 
   [[ -d "$src" ]] || { echo "Dionaea profile not found: $profile"; exit 1; }
-  [[ -f "$src/dionaea.conf" ]] || { echo "Missing dionaea.conf in profile $profile"; exit 1; }
+  [[ -f "$src/smb.yaml" ]] || { echo "Missing smb.yaml in profile $profile"; exit 1; }
+  [[ -f "$src/ftp.yaml" ]] || { echo "Missing ftp.yaml in profile $profile"; exit 1; }
 
   echo "[+] Applying Dionaea profile: $profile"
 
-  cp "$src/dionaea.conf" "$dst_cfg"
+  cp "$src/smb.yaml" "$dst_services/smb.yaml"
+  cp "$src/ftp.yaml" "$dst_services/ftp.yaml"
+
+  if [[ -f "$src/http.yaml" ]]; then
+    cp "$src/http.yaml" "$dst_services/http.yaml"
+  fi
 
   (cd "$TPOT" && docker compose restart dionaea)
 
