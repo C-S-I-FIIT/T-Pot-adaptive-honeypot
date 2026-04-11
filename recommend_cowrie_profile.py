@@ -315,7 +315,7 @@ def print_summary(path: Path, stats: dict, current_profile: str, recommended: st
     print(f"\nSubor: {path}")
     print(f"Aktualny profil: {current_profile}")
     print(f"Odporucany profil: {recommended}")
-    print("\nSuhorne metriky:")
+    print("\nSuhrnne metriky:")
     print(f"- Cowrie eventy: {stats['total_events']}")
     print(f"- login.failed: {stats['login_failed']}")
     print(f"- login.success: {stats['login_success']}")
