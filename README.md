@@ -135,3 +135,57 @@ Poznámky:
 - skript očakáva projekt v ceste `/home/filip/adaptive_honeypot`,
 - T-Pot dáta očakáva v `/home/filip/tpotce`,
 - na úspešné vykonanie potrebuje prístup k týmto adresárom a funkčný `docker compose`.
+
+## Odporucanie Cowrie profilu z logov
+
+Skript `recommend_cowrie_profile.py` nacita exportovane CSV logy, spracuje Cowrie eventy a cez jednoduchy Thompson sampling odporuci, ci ponechat aktualny profil alebo prepnut na iny.
+
+Spustenie:
+
+```bash
+python3 recommend_cowrie_profile.py --current-profile default
+```
+
+Po spusteni sa otvori dialog na vyber CSV suboru.
+
+Alternativne vies zadat subor priamo:
+
+```bash
+python3 recommend_cowrie_profile.py \
+  --current-profile default \
+  --csv-file /cesta/k/logom.csv
+```
+
+Skript momentalne pracuje s Cowrie eventmi:
+
+- `cowrie.login.failed`
+- `cowrie.login.success`
+- `cowrie.command.input`
+
+Na vystupe vypise:
+
+- sumar logov,
+- top usernames a passwords,
+- Thompson sampling score pre jednotlive profily,
+- finalne odporucanie, ci profil zmenit alebo nie.
+
+Minimalne podporovane stlpce v CSV:
+
+- `@timestamp`
+- `eventid`
+
+Volitelne, ak su k dispozicii:
+
+- `username`
+- `password`
+- `session`
+- `src_ip`
+- `message`
+- `ip_rep`
+
+CSV z Kibany vies ziskat nasledovne:
+
+- v pravom hornom rohu klikni na ikonku pre stiahnutie alebo export,
+- Kibana vytvori report na pozadi,
+- hotovy export najdes v `Stack Management > Reporting`,
+- odtial vies CSV subor stiahnut a pouzit v skripte `recommend_cowrie_profile.py`.
