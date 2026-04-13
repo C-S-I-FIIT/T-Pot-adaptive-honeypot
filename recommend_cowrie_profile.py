@@ -14,11 +14,6 @@ from tkinter import Tk, filedialog
 
 
 COWRIE_PROFILES = {
-    "default": {
-        "expected_usernames": {"root", "admin", "user", "ubuntu"},
-        "expected_passwords": {"root", "admin", "user", "ubuntu", "123456", "password"},
-        "persona": "generic",
-    },
     "server": {
         "expected_usernames": {"root", "admin", "ubuntu", "oracle", "postgres", "mysql", "deploy", "sysadmin"},
         "expected_passwords": {
@@ -62,10 +57,6 @@ FTP_PROFILES = {
     },
 }
 
-FTP_PROFILE_ALIASES = {
-    "default": "windows7",
-}
-
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -80,7 +71,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--current-profile",
         default=None,
-        help="Current active profile. If omitted, a default for the selected mode is used.",
+        help="Current active profile. If omitted, a built-in fallback for the selected mode is used.",
     )
     parser.add_argument(
         "--seed",
@@ -286,7 +277,7 @@ def cowrie_profile_match_score(stats: dict, profile_name: str) -> float:
     elif definition["persona"] == "legacy":
         persona_bonus = 0.10 * bounded_ratio(stats["known_attacker_ratio"], 1.0)
     else:
-        persona_bonus = 0.05
+        persona_bonus = 0.0
 
     return min(1.0, 0.45 * username_match + 0.40 * password_match + persona_bonus)
 
@@ -503,7 +494,7 @@ def main() -> int:
         mode = args.type
 
         if mode == "cowrie":
-            current_profile = args.current_profile or "default"
+            current_profile = args.current_profile or "server"
             if current_profile not in COWRIE_PROFILES:
                 raise ValueError(f"Neznamy Cowrie profil: {current_profile}")
             events = load_cowrie_events(rows)
@@ -519,7 +510,6 @@ def main() -> int:
 
         elif mode == "ftp":
             current_profile = args.current_profile or "windows7"
-            current_profile = FTP_PROFILE_ALIASES.get(current_profile, current_profile)
             if current_profile not in FTP_PROFILES:
                 raise ValueError(f"Neznamy FTP profil: {current_profile}")
             events = load_ftp_events(rows)

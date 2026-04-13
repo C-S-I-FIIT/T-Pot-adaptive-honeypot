@@ -47,10 +47,6 @@ To znamená, že host-side súbory sú namountované do kontajnera a po ich zmen
 │   ├── apply_profile.sh
 │   └── profiles/
 │       ├── cowrie/
-│       │   ├── default/
-│       │   │   ├── cowrie.cfg
-│       │   │   ├── userdb.txt
-│       │   │   └── honeyfs/
 │       │   ├── server/
 │       │   │   ├── cowrie.cfg
 │       │   │   ├── userdb.txt
@@ -115,7 +111,6 @@ Ak namiesto názvu profilu použiješ `random`, skript náhodne vyberie jeden z 
 Príklady:
 
 ```bash
-./apply_profile.sh cowrie default
 ./apply_profile.sh cowrie server
 ./apply_profile.sh cowrie random
 
@@ -143,7 +138,7 @@ Skript `recommend_cowrie_profile.py` nacita exportovane CSV logy a cez jednoduch
 Spustenie:
 
 ```bash
-python3 recommend_cowrie_profile.py --type cowrie --current-profile default
+python3 recommend_cowrie_profile.py --type cowrie --current-profile server
 ```
 
 Po spusteni sa otvori dialog na vyber CSV suboru.
@@ -153,7 +148,7 @@ Alternativne vies zadat subor priamo:
 ```bash
 python3 recommend_cowrie_profile.py \
   --type cowrie \
-  --current-profile default \
+  --current-profile server \
   --csv-file /cesta/k/logom.csv
 ```
 
@@ -165,12 +160,9 @@ Skript podporuje dva mody:
 Priklady:
 
 ```bash
-python3 recommend_cowrie_profile.py --type cowrie --current-profile default
+python3 recommend_cowrie_profile.py --type cowrie --current-profile server
 python3 recommend_cowrie_profile.py --type ftp --current-profile windows7
-python3 recommend_cowrie_profile.py --type ftp --current-profile default
 ```
-
-Pri `--type ftp` sa `default` mapuje na profil `windows7`.
 
 ### Cowrie CSV
 
