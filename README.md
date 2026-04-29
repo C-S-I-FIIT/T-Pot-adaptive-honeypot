@@ -149,8 +149,7 @@ Alternativne vies zadat subor priamo:
 ```bash
 python3 recommend_cowrie_profile.py \
   --type cowrie \
-  --current-profile default \
-  --csv-file /cesta/k/logom.csv
+  --current-profile default
 ```
 
 Skript podporuje dva mody:
